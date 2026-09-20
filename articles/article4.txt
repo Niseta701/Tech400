@@ -1,0 +1,1132 @@
+Datenbank-Spektrum(2025)25:71–81
+https://doi.org/10.1007/s13222-025-00503-x
+SCHWERPUNKTBEITRAG
+Large Language Models for Information Retrieval: Challenges and
+Chances
+Timo Breuer1 · Sameh Frihat2
+Ralf Schenkel4
+·NorbertFuhr2 ·DirkLewandowski3
+Received: 31 March 2025/ Accepted:3July2025/Published online: 11September2025
+©TheAuthor(s) 2025
+Abstract
+·Philipp Schaer1 ·
+The rapid advancement of Large Language Models (LLMs) has introduced a paradigm shift in Information Retrieval (IR),
+moving beyond conventional keyword queries and ranked result lists. LLMs now play a critical role in the evolution of
+IR technologies and introduce new interaction forms like Retrieval-Augmented Generation, which is a more dynamic and
+interactive retrieval process that integrates various aspects of Information Access, like Question Answering, into the dialog
+between a searcher and the search engine. We explore the multi-faceted impact of LLMs on IR, particularly in three
+distinct layers where they have become an integral part of the retrieval process, namely the retrieval system and processing
+pipeline that can make use of a richer semantic representation using advanced language models, the interaction layer, and
+the broader IR ecosystem. For the latter, we focus on evaluation issues as well as bias, fairness, and ethical concerns. We
+also highlight some recent cases of using LLMs in the medical domain to demonstrate the impact on one specific domain.
+1 Introduction
+The rapid advancement of Large Language Models (LLMs)
+has significantly transformed the landscape of Information
+Access (IA) and Information Retrieval (IR) in particular.
+Traditionally, IR has been centered around search engines
+that rank and retrieve documents based on keyword match
+ing and statistical models. However, the rise of LLMs has
+introduced a paradigm shift, moving beyond conventional
+ranked result lists. LLMs now play a critical role in the
+evolution of IR technologies and introduce new interaction
+forms like Retrieval-Augmented Generation (RAG), which
+is a more dynamic and interactive retrieval process that inte
+grates various aspects of IA like Question Answering (QA)
+into the dialog between a searcher and the search engine.
+Philipp Schaer
+philipp.schaer@th-koeln.de
+1
+2
+3
+4
+TH Köln- University of Applied Sciences, Cologne,
+Germany
+University of Duisburg-Essen, Duisburg, Germany
+Hamburg University of Applied Sciences, Hamburg, Germany
+Trier University, Trier, Germany
+This paper explores the multi-faceted impact of LLMs
+on IR, particularly in three distinct layers where they have
+become an integral part of the retrieval process.
+First, LLMs contribute directly to the retrieval system
+and the processing pipeline by enhancing indexing, gener
+ating enriched word embeddings, or supporting query and
+document expansion techniques (see Sect. 2). These im
+provements leverage the broad “world knowledge” encap
+sulated within LLMs with the aim to increase search effec
+tiveness. LLM-enhanced indexing techniques allow search
+engines to build more semantically aware representations
+of text, leading to more contextually relevant retrieval re
+sults. Furthermore, LLMs assist in query understanding by
+reformulating queries to bridge the gap between user intent
+and indexed information.
+Second, LLMs are an important part of the interaction
+layer and are reshaping the human-computer dialogue with
+search systems (see Sect. 3). Unlike traditional keyword
+based search models, LLM-supported conversational in
+terfaces facilitate a more interactive and iterative search
+experience. This transition introduces new interaction
+paradigms, shifting the focus from static ranked result lists
+to a dialogue-based retrieval approach. The ability of LLMs
+to interpret complex queries, provide nuanced responses,
+and adapt to user feedback in real-time is transforming
+search into a more intuitive and efficient process.
+K
+72
+Datenbank-Spektrum (2025) 25:71–81
+Finally, LLMs serve as meta-tools or frameworks that
+enhance the broader IR ecosystem (see Sect. 4). They as
+sist in the synthetic creation of IR test collections and refine
+relevance assessment methodologies but can also be used
+to improve the realism of user simulations. By enabling
+more sophisticated test environments, LLMs contribute to
+advancing IR research, allowing for the evaluation of new
+retrieval techniques in increasingly complex and realistic
+settings. Their role in benchmarking and assessing retrieval
+performance is becoming more present and important [23],
+providing deeper insights into system behavior and effec
+tiveness. Furthermore, LLMs facilitate the automated as
+sessment and refinement of ranking algorithms by gener
+ating synthetic relevance labels, reducing the dependence
+on human annotators, and accelerating the development of
+more robust retrieval models. However, as these models re
+define search interaction, they also reintroduce longstanding
+challenges, such as biases, fairness concerns, and the inter
+pretability of retrieval outcomes, particularly in applications
+like RAG. Understanding and mitigating these issues re
+main crucial in ensuring ethical and unbiased information
+access.
+The influence of LLMs on IR is not merely a supple
+mentary enhancement but a fundamental shift in how infor
+mation access is carried out. The integration of LLMs into
+retrieval pipelines, user interfaces, and evaluation frame
+works has the potential to change our understanding of the
+field and to enable new system designs where information
+retrieval is more intelligent, contextual, and interactive [51].
+This is demonstrated by a brief overview of recent use cases
+(see Sect. 5).
+In this overview paper, we focus on the innovative appli
+cations and solutions that LLM-enhanced IR systems offer,
+as well as unresolved challenges and limitations. By ex
+amining the evolving role of LLMs, we aim to provide
+a comprehensive perspective on how these models shape
+the future of information access and retrieval. The contin
+uous development of LLM-integrated IR systems presents
+opportunities for more efficient, accurate, and user-centric
+information access, opening new research directions and
+practical implementations that redefine the boundaries of
+traditional IR systems.
+2 ASystem-orientedPerspectiveOn the
+Interplay of IR and LLMs
+In the following, we review the current state of the art
+and challenges ahead from a system-oriented perspective
+on the interplay of Information Retrieval (IR) technology
+and Large Language Models (LLM). While the topic is
+complex, intertwined, and involves plenty of open research
+directions, we follow a threefold topical (split of 1) works
+where IR supports the LLM ((cf. Sect. 2.1), 2) vice versa,
+the LLM supports the IR component ((cf. Sect. 2.2), and 3)
+another topical cluster where LLM is not an active part of
+the IR system but instead supports it implicitly or is used
+to evaluate it (cf. Sect. 2.3). The following text represents
+a condensed review of recent work and efforts, and we can
+only scratch the tip of the iceberg in this overview article.
+We refer the interested reader to several recent perspec
+tive articles and overview reports for further reading on the
+matter [2, 3, 26, 79].
+2.1 IR-enhanced LLMs
+These days, the most popular application of IR in support of
+LLMsis Retrieval Augmented Generation (RAG) [37]. The
+underlying principle of RAG implies evidence grounded in
+a ranking that is provided to the LLMs to generate a natural
+language answer in response to a user’s prompt or query.
+In this case, the IR component is located at an intermediate
+stage in a data pipeline rather than at the interface level. The
+users of a RAG-based system would not interact directly
+with the ranking or outputs of the IR system but interact
+with the generated text answer inferred from the ranking.
+LLMs are known for generating or hallucinating false
+information sometimes [32]. RAG-based systems provide
+more accurate and factual answers than LLMs without re
+trieval-based guidance. The IR component provides a rank
+ing of information items, e.g., text passages, as a counter
+measure to guide the LLM, thus avoiding hallucinations
+[57]. Likewise, it helps the LLMs to stay updated with re
+cent information without the need for retraining, which can
+have a considerable impact on the costs of running these
+kinds of systems. Currently, it is more cost-efficient to keep
+an index updated than retraining an LLM [38].
+State-of-the-art RAG-based systems rely on vector
+databases where each information item is represented by an
+embedding vector [10]. The retrieved ranked list of items
+is usually implemented with nearest neighbor search meth
+ods. In this context, compromises have to be made between
+Exact Nearest Neighbors (ENN) and Approximate Nearest
+Neighbors (ANN) search methods [52]. ENN methods de
+liver precise rankings but are costly in terms of memory
+bandwidth, while ANN methods allow faster retrieval at
+the cost of less effective rankings. In other words, ENN
+based rankings allow more accurate generated answers
+with fewer items retrieved, whereas ANN methods need
+to retrieve more items to lay the foundation of generated
+answers with comparable quality. In the end, tradeoffs have
+to be made between the quality of the generated outputs
+and the efficiency of the retrieval and generation steps,
+which are also highly influenced by the available hardware
+resources.
+K
+Datenbank-Spektrum (2025) 25:71–81
+73
+Despite the guidance by the results of an IR system, the
+LLM-generated content is not always free from hallucina
+tions. Likewise, the influence of the chunking of longer
+documents into information items, the ranking of the items
+and the prompting of the LLM has yet to be fully under
+stood [45]. Several works suggest that besides the actual
+information in the ranking, the presentation order matters
+and has an influence on the answer generated by the LLM
+[15, 44].
+RAG-based generated answers allow tailored and con
+densed responses for particular information needs, which
+rankings alone normally cannot provide. RAG-based sys
+tem responses can also be seen as a part of the larger re
+search fields of Conversational Search (ConvSearch) and
+Information Seeking, where there is a sequence of inter
+actions between the user and the system [66]. ConvSearch
+systems envision interactive conversations that help users
+fulfill their information-seeking or transactional tasks. Open
+topics are, among others, proactive search actions by the
+conversational agent or how system answers shall be pro
+vided, e.g., with different modalities like rankings or con
+densed natural language texts [7].
+One of the major challenges remains the efficient and
+automated evaluation of machine-generated answers to user
+queries. While in a typical ad hoc retrieval experiment, the
+number of correct answers, i.e., relevant items, is fixed,
+there is, in principle, an infinite number of possible an
+swers generated by an LLM. Recent works propose semi
+automated human-in-the-loop approaches [49] or fully au
+tomated methods [19] with other LLMs than those evalu
+ated. Fundamental to most of these approaches is the iden
+tification of so-called information nuggets—small, concise
+pieces of information that are valuable or significant on
+their own.
+2.2 LLM-enhanced IR
+In this case, the LLM supports the retrieval method in re
+trieving information items. From a user-oriented perspec
+tive, the system returns a ranked list as a response to a nat
+ural language query, i.e., the final system output to be eval
+uated is a list of ranked items, e.g., text passages. Gen
+erally, language models have been integral to many tradi
+tional ranking methods [14]. However, the introduction of
+the transformer architecture and its attention mechanism
+[70], and BERT in particular [18], led to substantial effec
+tiveness improvements lately. A typical multi-stage pipeline
+is made with a cost-efficient, lexical, first-stage ranker that
+is followed by a more computationally costly second-stage
+reranker that is based on a fine-tuned LLM or its embed
+dings [41]. Current state-of-the-art approaches leverage in
+struction-tuned LLMs, often as rerankers in zero-shot set
+tings, where no fine-tuning of the language model is re
+quired due to the extensive world knowledge that is inherent
+in these kinds of LLMs [61].
+Lately, the idea of Generative Retrieval [50] has estab
+lished a paradigm shift of the typical index-then-retrieve
+pipeline, and instead, leverages the LLM to generate the
+identifier of the relevant item in response to a user query.
+There is no inverted index in the traditional sense, but
+the generative model infers the required information from
+pre-trained knowledge. Recent works on this topic include
+countermeasures to the false pruning problem by term set
+generation [81], or novel optimization and decoding ap
+proaches [78].
+2.3 Other UseCases ofLLMsin IR
+Besides the tight integration of IR and LLMs, instruction
+tuned LLMs have been exploited to support the IR sys
+tem and the experimental setup, recently. One of the most
+popular research topics is the automated generation of rel
+evance labels with the help of LLMs. Basically, the model
+is provided with the information need or query, the infor
+mation item, e.g., a text passage, and the prompt to make
+a judgment about the relevance [65]. Beyond relevance la
+bels, other work proposes generating an entire synthetic test
+collection, including both topics and corresponding labels
+[54]. In Sect. 4, we provide a more in-depth discussion of
+the state-of-the-art evaluation of IR systems with LLMs.
+In addition to relevance labels, LLMs also offer great
+potential for more realistic user modeling as part of simula
+tions [25, 80]. Conventional user simulations followed rule
+based approaches that have a high degree of interpretability
+but often lack fidelity with real user behavior. To address
+this shortcoming, recent work proposed modeling each user
+interaction with an instruction-tuned LLM [80], suggest
+ing a higher level of fidelity. In this context, several works
+also use instruction-tuned LLMs to generate queries [1]that
+align with real user queries reasonably well.
+Other topics include training data generation with in
+struction-tuned LLMs to fine-tune dense-retrievers [34]or
+using them as a preprocessing component, e.g., for stem
+ming [73] or document expansion [47].
+3 UserPerspective
+The integration of LLMs into IR systems significantly
+changes the user experience, introducing new interaction
+paradigms while addressing critical challenges such as text
+simplification and user trust. We are now at a stage where,
+with LLMs, we can enrich user interaction in a way that
+solves central problems and helps fulfill visions for search
+systems formulated in the past [72]. For instance, users can
+formulate queries/prompts in natural language and provide
+K
+74
+Datenbank-Spektrum (2025) 25:71–81
+detailed instructions. This can reduce the problem of the
+“compromised information need” described by [63], where
+users historically have been struggling to translate their in
+formation requirements into effective search queries. This
+shift enables more accurate expression of intent, bridg
+ing the gap between user needs and system responses.
+Furthermore, LLMs facilitate multimodal and multilingual
+interactions, advancing toward White’s vision [74] of search
+systems as personalized assistants capable of understanding
+user behavior, context, and document relevance. Beyond
+traditional information retrieval, LLMs extend support to
+exploratory search tasks, such as synthesizing information,
+conducting comparisons, and integrating information seek
+ing with application activities central to complex search
+behavior as outlined by [48].
+3.1 Interaction Paradigms
+A critical challenge lies in designing systems that allow
+LLMstoenableintuitive interaction while addressing inher
+ent complexities. One emerging paradigm is conversational
+search, where users engage in dynamic, iterative dialogues
+with the system to refine queries, clarify ambiguities, and
+navigate information needs [67]. This contrasts with tra
+ditional keyword-based retrieval, as LLMs allow users to
+express queries in complete sentences or paragraphs and to
+refine queries through dialogue, thereby reducing cognitive
+load and improving precision. Direct question answering
+further streamlines the process, enabling systems to synthe
+size answers from multiple sources rather than merely re
+turning documents or single sentences extracted from these
+documents. Users also gain precise control through instruc
+tion-following, issuing commands like “Summarize this ar
+ticle” or “Compare these two arguments”, thereby expand
+ing the scope of IR systems to encompass complex infor
+mation processing tasks or, as White [75] put it, advancing
+the task frontier.
+Adaptability is another aspect, as LLMs can adapt inter
+actions to user preferences, resolve ambiguities through
+clarification dialogues, and structure responses to reflect
+multiple interpretations of vague queries. Contextual aware
+ness plays a key role. While current systems often require
+explicit inclusion of background information in prompts,
+future advancements aim to implicitly integrate context
+through conversation history, user profiles, or situational
+awareness, creating seamless and adaptive interactions [68].
+3.2 TextTransformation
+LLMs excel at transforming complex texts into accessi
+ble formats, broadening information accessibility. Lexical
+simplification replaces technical or obscure terms with
+simpler synonyms, assisting users with limited literacy or
+domain knowledge. Syntactic simplification restructures
+complicated sentences into shorter, clearer units, enhancing
+readability [22]. Content simplification strips non-essen
+tial details, reducing cognitive load and emphasizing core
+ideas. Summarization capabilities condense lengthy texts
+or even aggregated search results-into concise overviews,
+enabling quick comprehension. Cross-language interactions
+break down linguistic barriers by automatically translating
+queries and documents, while structured transformations
+convert prose into tables or other formats, facilitating data
+interpretation. Together, these techniques empower users
+to engage with information in ways that align with their
+unique needs and capabilities. Regarding the amount of
+information, summarization techniques can help reduce in
+formation overload, a problem traditionally regarded as re
+sulting from an overwhelming number of documents, either
+in a collection or a result set [8]. However, LLMs can also
+inadvertently amplify information overload by generating
+excessively verbose or redundant content, overwhelming
+users with unnecessary details even when summarization
+is applied. The ease of producing large volumes of text
+through LLMs might lead to an overabundance of informa
+tion, requiring users to sift through more material to discern
+relevance. For example, repetitive outputs in conversational
+interactions can increase cognitive load despite the intent
+to clarify. Balancing conciseness with comprehensiveness
+thus becomes critical to ensure LLMs alleviate rather than
+exacerbate information overload [35].
+3.3 UserTrust
+A significant challenge is building and maintaining user
+trust in LLM-based IR systems [20]. A critical first step
+is improving explainability: users require transparent ratio
+nales for system responses to counteract the inherent “black
+box” nature of LLMs. Explanations can range from high
+lighting relevant passages in source documents to providing
+a rationale for the system’s reasoning process. A challenge
+is not to produce text that convinces the user and does
+not really explain the system’s reasoning. Equally critical
+is source attribution, which anchors responses in verifiable
+references, allowing users to evaluate credibility, a neces
+sity given the propensity of LLMs to hallucinate unfounded
+claims [31]. Equipping systems to handle uncertainty fur
+ther mitigates risks, particularly in high-stakes domains
+such as healthcare [39]. By signaling confidence levels,
+presenting alternative interpretations, or directing users to
+authoritative sources, systems can navigate errors grace
+fully while preserving trust. Together, these strategies form
+a framework for aligning LLM outputs with user expecta
+tions of reliability and transparency. Trustworthiness also
+declines when other ethical issues like induced bias or un
+fairness become apparent, for this we refer to Sect. 4.2.
+K
+Datenbank-Spektrum (2025) 25:71–81
+75
+3.4 UserDiversity
+Designing inclusive LLM-driven IR systems demands care
+ful attention to user diversity, ensuring accessibility across
+cultural, cognitive, and contextual dimensions. Cultural sen
+sitivity is important, requiring systems to recognize di
+verse norms and values while mitigating biases embed
+ded in training data [27]. Techniques like Direct Preference
+Optimization (DPO) [53] offer pathways to align outputs
+with culturally appropriate frameworks. Personalization fur
+ther enhances inclusivity by tailoring language, detail, and
+formats to individual needs-such as adapting responses to
+a user’s expertise level or information goals-though this
+must be balanced against privacy concerns to avoid over
+reliance on personal data [43]. Strategic summarization,
+hierarchical presentation of key points, and intuitive nav
+igation mechanisms help users filter and prioritize content
+efficiently. By integrating these approaches, IR systems can
+accommodate heterogeneous user backgrounds and needs,
+reducing cognitive barriers while fostering equitable access
+to information.
+4 LLMsShapingaNew IR Ecosystem
+The use of Generative Artificial Intelligence in general and
+LLMs in particular introduces new opportunities that also
+come with several challenges and caveats. In the following,
+we review the state of the art and challenges ahead with
+a special focus on the evaluation of the experimental setup
+in Sect. 4.1, as well as bias, fairness, and ethics in Sect. 4.2.
+4.1 Evaluation
+In alignment with the system-oriented perspectives of Chap
+ter Sect. 2, LLMs can either be used as a means of support
+ing the evaluation of IR systems, or vice versa, the LLM it
+self is the evaluation target, e.g., as part of a conversational
+agent facilitating the information access. For this reason,
+the following is divided into two parts, where Sect. 4.1.1
+gives an overview of current efforts about the use of LLM
+enhanced evaluations of IR systems, and Sect. 4.1.2 fo
+cuses on the evaluation of conversational agents, distilling
+the outcomes of a dedicated Dagstuhl workshop [7].
+4.1.1 LLM-enhanced Evaluation of IR Systems
+When using LLM-based technologies for evaluating the ef
+fectiveness of IR systems, the core question boils down to
+whether LLMs can correctly infer the relevance of a given
+piece of text in correspondence to an underlying infor
+mation need usually expressed by a topic. Therefore, sev
+eral works assess whether LLM-based relevance judgments
+align with those made intellectually by humans.
+Anextensive study by Microsoft suggests that LLMs can
+provide reasonable judgments that are on par with crowd as
+sessors [65]. Concerns have been raised, however, that these
+kinds of labels are not good enough to identify exception
+ally well-performing systems but rather help to draw the
+line between reasonable and low-performing systems [58].
+Another work by Takehi et al. [62] suggests that LLM
+based relevance judgments are overly optimistic with too
+many documents judged as relevant, i.e., as false positives.
+Especially if the same underlying LLM is used for both
+the relevance assessment and the ranking, the experimental
+setup will run into circularities that inevitably may bias the
+overall outcome with LLM-based label generators that pre
+fer ranking models that rely on LLMs of the same model
+family. In this context, the reader might be inclined to the
+mental image of the ouroboros—a snake biting its own
+tail—analogously to an LLM evaluating its own ranking
+preferences with its own judgments. Of course, a differ
+ent, preferably better, LLM should be used to evaluate an
+LLM-based retrieval approach. However, this cross-model
+evaluation setup has its limitations, once the best-perform
+ing model, i.e., the one with the most world knowledge, is
+used as a ranker. What is a good evaluator in this case? For
+a more in-depth discussion, we refer the reader to Balog
+et al. [5].
+Instead of fully relying on LLMs to make the relevance
+judgments, semi-automated human-in-the-loop approaches
+have been proposed. As one of the very first conceptual
+approaches, Faggioli et al. [23] propose hybrid approaches
+that involve both human as well as LLM-based judgments
+to different extents. In ongoing community efforts, the dis
+cussed challenges and others are currently addressed; for
+instance, as part of the LLM4Eval workshop series [54, 55]
+or as part of the TREC Retrieval Augmented Generation
+Task [69].
+4.1.2 Evaluation of LLM-enhanced Conversational Agents
+As LLM-based systems allow for conversational informa
+tion access, they pose specific challenges for their eval
+uation. A recent Dagstuhl Perspectives Workshop “Con
+versational Agents: A Framework for Evaluation (CAFE)”
+addressed this issue by developing a general model for the
+evaluation of conversational information access (CONIAC)
+systems. The following text represents a condensed version
+of the workshop findings. We refer the interested reader to
+the extended workshop report for more detailed discussions
+and additional references [7].
+The framework starts from the assumption that a CO
+NIAC system will be able to (i) interact with users more
+naturally and seamlessly, (ii) guide a user through the pro
+K
+76
+Datenbank-Spektrum (2025) 25:71–81
+cess of refining and clarifying their needs, (iii) aid decision
+making by making personalized recommendations and in
+formation while being able to explain them, (iv) generate,
+retrieve and summarize relevant information .
+The CAFE framework distinguishes six major elements
+of an evaluation:
+StakeholderGoals Stakeholders of a CONIAC system may
+have diverse goals that might or might not be directly ac
+cessible to system designers or evaluators and must often be
+implicitly inferred in evaluation. CONIAC systems might
+also have multiple goals ranging from end users having (in
+)direct information needs, to platforms deploying CONIAC
+systems interested in content usage, user engagement, im
+pression generation, user retention, to name a few.
+Tasks CONIAC involves tasks characterized by an informa
+tion need, human involvement, goal orientation, and mixed
+initiative between the user and the system. While some tasks
+benefit from the introduction of a conversationally compe
+tent system, others may not, depending on the complexity
+of the task.
+User Aspects When developing an evaluation framework
+for CONIAC systems, it is crucial to consider user-spe
+cific aspects, such as preferences, specialized needs, exper
+tise types, and background characteristics, which may make
+conversational systems more beneficial than non-conversa
+tional alternatives.
+Criteria The scope of evaluation can range from single-turn
+interactions to entire conversations and long-term system
+usage, each requiring different criteria for assessment. Ad
+ditionally, the temporal dimension, which examines how the
+system’s performance changes over time, is a critical factor
+that intersects with both stationary and dynamic properties,
+making it essential for a comprehensive evaluation.
+Methodology In addition to the standard distinction of
+user-focused and system-focused methodologies, the eval
+uation framework categorizes evaluation methodologies
+also according to the employed time model—a dimension
+especially relevant for CONIAC. This dimension ranges
+from stationary methodologies like single-interaction ex
+periments to methodologies like controlled lab studies that
+allow for continuous measurements, for example, physio
+logical ones.
+Measures reflect the system’s ability to provide accurate,
+relevant, and timely information during interactions. These
+include objective measures of effectiveness to subjective
+notions of user satisfaction like self-reported satisfaction.
+By incorporating both objective effectiveness measures and
+subjective self-reported satisfaction, evaluators can better
+understand the system’s strengths and areas for improve
+ment.
+When designing an evaluation, the first step is to iden
+tify the stakeholders and the goals that need to be addressed.
+Based on the goals, the user tasks to be studied in the eval
+uation have to be defined, and the user aspects must be con
+sidered. The central element of an evaluation is the criteria
+to be focused on, which are determined by the stakeholder
+goals. Roughly speaking, we can distinguish between user
+centric and system-centric criteria, and the chosen crite
+ria restrict the range of possible evaluation methods (i.e.,
+any user-centric criterion requires the involvement of actual
+users in the evaluation procedure). Finally, for each quanti
+tative criterion, an appropriate measure has to be defined.
+4.2 Bias,Fairness, and EthicalConcerns
+The intersection of LLMs and IR presents both opportuni
+ties and challenges, particularly regarding bias, fairness, and
+ethical concerns. While LLMs have apparently improved
+the retrieval performance of many systems, they also in
+troduce new forms of bias and ethical risks that have to
+be carefully addressed. Due to the nature of their training
+data, LLMs inherently amplify biases, which manifest at
+various stages of the IR pipeline, including embedding rep
+resentations, document ranking, and query interpretation.
+However, LLMs can also serve as tools to mitigate bias,
+either by identifying and quantifying it or by re-ranking
+search results to improve fairness.
+In addition to the positive effects already mentioned,
+LLMs can also introduce bias into the search process. Bias
+is an inherent part of all LLMs as they were trained on
+potentially biased datasets, and although a huge amount
+of work is done to de-bias LLMs in their training phase,
+the issue still remains. LLMs in IR can introduce bias at
+different levels, like on the embedding level or in rank
+ing and re-ranking processes. Bias introduces unfairness.
+Biased search systems can produce biased and, therefore,
+unfair results. This is not new, and the IR community has
+ongoing hands-on campaigns like the TREC Fair Ranking
+track from 2019–2022 or the NTCIR Fair Web Task [56].
+However, these shared task campaigns do not yet include
+any LLM-based search scenarios. The whole issue is stuck
+in traditional ad-hoc retrieval settings and does not incor
+porate current RAG-based scenarios.
+In the following, we will give a brief overview of current
+topics with respect to bias, fairness, and ethical concerns
+along the three main bias sources and the most promising
+mitigation strategies as summarized in Table 1. For a more
+extensive overview on biases in IR systems, we would like
+to point the reader to two recent surveys [4, 16].
+K
+Datenbank-Spektrum (2025) 25:71–81
+77
+Table 1 Sources of bias in LLM-based IR systems and typical mitigation strategies.
+Bias source
+(1) data collection, (2) model development, (3) result evaluation
+Mitigation strategy
+(1) data sampling (data augmentation or filtering), (2) distribution reconstruction (rebalancing, regularization,
+prompting)
+4.2.1 Sources of Bias and Unfairness
+As described earlier, the rise of LLMs has changed the
+pipeline and system design of IR systems. In these new
+LLM-based IR systems, three stages can be identified as
+bias and unfairness sources: data collection, model devel
+opment, and result evaluation (see Table 1).
+Newdatasources. LLMs generate content for IR as new
+data sources and training material [12]. Unlike traditional
+content sources that (re-)use professional or user-generated
+content, LLMs can produce vast amounts of text at scale.
+This can have an influence on the text distributions in the
+data, introducing new biases like source bias or factual
+ity bias, as LLMs have the tendency to create non-factual
+or “hallucinated” content that is again favored by neural
+matching techniques in contrast to human-authored content
+[17].
+LLM-based IR models. LLMs introduce randomness
+into the retrieval process, like in the results generation step
+of a RAG system [84].Daietal. [16] categorize these in
+consistency biases into four groups: position bias, popular
+ity bias, input-hallucination bias, and context-hallucination
+bias. Here, LLMs have been described as preferring docu
+ments from specific input positions or giving higher rank
+ings for popular items (also known as the Matthew effect).
+Result evaluation. Human relevance judgments play an
+essential role in the evaluation of IR systems. However, hu
+man evaluations are challenging and expensive and intro
+duce reproducibility issues. LLMs offer new possibilities
+for conducting evaluations without human evaluation. This
+step, while useful and practical, is highly debated in the
+IR community [58] asLLMshavebeenshown tobebi
+ased with respect to position, style, or a specific family of
+LLMs, which makes methods like BARTScore favor texts
+produced by their underlying model [82].
+4.2.2 Mitigation Strategies
+On the other hand, LLMs can help mitigate bias issues.
+Fine-tuning and training language models to detect bias
+hasproventobeaneffectivemeanstoidentifybiasinthe
+news domain; however, this requires the availability of la
+beled datasets [60], but these datasets do not exist for many
+domains. Here, strategies like data augmentation and data
+filtering are applied [13]. By utilizing recent LLMs, the
+need for fine-tuning and specific datasets can be omitted.
+Haak et al. [28] have shown that LLMs can be used to
+quantify the bias intensity by producing a score based on
+many pairwise relative bias assessments that can be con
+ducted with the help of LLMs. The latter can be used to
+improve the ability of RAG systems to correct themselves
+[77].
+Another mitigation strategy is to correct distortions in
+the data by applying rebalancing, regularization, or tuning
+the prompting.
+4.2.3 Ethical Concerns
+Ethical issues besides the previously discussed bias and
+fairness issues emerge when LLMs are part of IR systems,
+like misinformation and hallucination or privacy and data
+leakage.
+An imminent feature of LLMs is their ability to generate
+highly readable output that sounds plausible, although this
+output can still be incorrect or misleading. These outputs
+are called “hallucinations.” Users might retrieve pseudo
+factual data or rely on citations, dates, or misrepresented
+content. The level of trust users show against (LLM-en
+hanced) search engines is questionable [29].
+Privacy issues and data leakage are situations where
+training data might include sensitive or personally iden
+tifiable information, and LLMs include this information in
+the output. Retrieving or exposing private user data vio
+lates ethical and sometimes legal standards (e.g., GDPR)
+but can also harm the user trust in LLM-based systems (see
+Sect. 3.3). A query about a public figure might return pri
+vate details sourced from improperly filtered training data
+[59].
+Other concerns are related to the lack of transparency
+and explainability of LLM-generated content, issues related
+to intellectual property and copyright violations, and user
+manipulation and an over-reliance on LLMs that can reduce
+critical thinking or make users vulnerable to manipulation
+(intentional or not). All of these issues are too broad to
+be covered here, but we would like to point the readers
+to conferences like ACM FAccT or the recent CLEF lab
+ELOQUENT [33] that cover a lot of these very pressing
+issues of LLMs both on a technical level and their societal
+impacts.
+K
+78
+Datenbank-Spektrum (2025) 25:71–81
+5 UseCases
+LLMs have found applications in diverse fields that show
+case their ability to improve information access and deci
+sion-making processes. As the list of current examples and
+use cases is long and heterogeneous, we start by outlining
+some general applications and focusing only on one do
+main, the medical applications of LLMs. Here, LLMs have
+huge potential to revolutionize healthcare and improve pa
+tient outcomes.
+5.1 General Applications
+Prominent non-medical applications include:
+ContentGeneration.LLMsarewidelyusedtodraftarti
+cles, create marketing copy, and generate creative content
+across industries, typically using the RAG architecture,
+which grounds the text in evidence before writing [37].
+Education and Research. LLMs assist students and
+researchers in accessing relevant academic literature,
+summarizing papers, and generating reports. Tools like
+ChatGPT and Claude have become integral in academic
+workflows, as LLMs can predict searchers preferences
+[65]. LLM-based academic copilots first retrieve and
+rank relevant papers (e.g., instruction-tuned rerankers)
+before summarizing them for the learner [40].
+Legal Assistance. In the legal domain, LLMs are used
+to retrieve precedents, summarize legal documents, and
+provide insights into case law, enabling lawyers to save
+time and improve accuracy. Modern case-law assistants
+rely on legal case retrieval engines that fetch precedents
+and feed them to the LLM for drafting [76].
+Customer Support. Businesses employ LLMs to power
+chatbots and virtual assistants, providing personalized
+and timely responses to customer queries. Enterprise
+chatbots usually call an internal search API or vector in
+dex to retrieve frequently asked questions (FAQs) before
+generating personalized replies [36].
+Among these, the medical domain presents both the po
+tential and challenges of using LLMs in IR systems.
+5.2 MedicalApplicationsofLLMs
+The integration of LLMs into medicine presents a transfor
+mative yet complex landscape. While offering unique op
+portunities to enhance information access, streamline work
+flows, and accelerate research, their application in health
+care necessitates careful consideration of inherent chal
+lenges and ethical implications. LLMs hold the potential
+to improve clinician access to information by summariz
+ing complex clinical guidelines and literature [9], aid re
+searchers in evidence synthesis, and drug discovery, and
+empower patients through conversational interfaces for vir
+tual consultations and accessible health guidance. Further
+more, LLMs can advance personalized medicine by ana
+lyzing multimodal patient data, including genomic profiles
+and electronic health records (EHRs), to inform tailored
+treatment plans [6].
+Despite these advancements, significant challenges re
+main. The risk of LLMs generating inaccurate or fabricated
+medical information (“hallucinations”) poses critical safety
+concerns in diagnosis and treatment recommendations [71].
+Biases embedded in training data-such as underrepresenta
+tion of rare diseases or minority populations-can propagate
+discriminatory outcomes. Privacy mandates require special
+ized architectures to anonymize sensitive patient data while
+maintaining clinical utility, often necessitating Health In
+surance Portability and Accountability Act(HIPAA)-com
+pliant LLMs. The unclear decision-making processes of
+LLMs hinder interpretability, complicating trust-building
+with clinicians [83]. Practical integration challenges persist,
+including alignment with structured EHR formats like Fast
+Healthcare Interoperability Resources (FHIR) and real-time
+retrieval from dynamic clinical databases. Ethical dilemmas
+surrounding accountability for errors and the redefinition of
+clinician-patient relationships further underscore the need
+for cautious implementation [11].
+Patient-centered applications demonstrate both prom
+ise and pitfalls. LLMs streamline administrative tasks by
+auto-generating discharge summaries and symptom-check
+ing chatbots [21]. However, these systems must reconcile
+free-text generation with structured EHR templates, re
+quiring fine-tuning on standard medical ontologies. RAG
+mitigates hallucinations by grounding outputs in patient
+specific data, though seamless integration with real-time
+lab results remains technically demanding. Privacy remains
+paramount, as systems must anonymize outputs to com
+ply with regulations like HIPAA while retaining medical
+relevance-a balance achieved through tokenization tech
+niques and synthetic data generation [64].
+In clinical decision support, LLMs synthesize unstruc
+tured physician notes, imaging reports, and pharmacologi
+cal data to propose differential diagnoses. Multimodal sys
+tems cross-reference medical guidelines with patient histo
+ries to suggest evidence-based therapies [6, 24]. Challenges
+include maintaining temporal relevance amid rapidly evolv
+ing medical knowledge and filtering conflicting studies dur
+ing retrieval [46]. Hybrid frameworks that combine LLM
+generated insights with clinician oversight are emerging to
+balance automation with human accountability [83].
+For medical research, LLMs accelerate systematic re
+views by extracting key findings from PubMed’s 1 million+
+annual publications. Synthetic data generation enables pri
+vacy-preserving model training using realistic EHR simu
+lations [30], while cross-lingual retrieval democratizes ac
+K
+Datenbank-Spektrum (2025) 25:71–81
+79
+cess to global research, though accurate translation of cul
+turally nuanced terms (e.g., traditional medicine concepts)
+remains challenging. Citation-grounded RAG pipelines pri
+oritize peer-reviewed sources over preprints, yet detecting
+methodological biases in retrieved documents requires on
+going refinement [42].
+Future directions emphasize medical-specific LLMs
+trained on curated biomedical corpora, multimodal archi
+tectures unifying text, imaging, and genomic data, and
+explainable AI frameworks to audit model reasoning [11].
+Retrieval-augmented systems will increasingly leverage
+federated knowledge graphs from trusted repositories,
+while standardized benchmarks assess factual accuracy
+and bias [11]. Ethical guidelines must evolve to address
+emerging questions about professional autonomy, liability,
+and the role of LLMs as collaborative tools rather than
+autonomous agents [83].
+6 Conclusion
+LLMs enhance and replace many specialized functions that
+have been explored over decades of IR research. Their
+greatest potential in IR lies in serving as intermediaries
+between users and retrieval backends, enabling a shift from
+traditional query-based interactions to more natural, con
+versational exchanges. To fully leverage this potential, user
+centric evaluation methods will become increasingly impor
+tant. However, LLMs also introduce new challenges, such
+as hallucinations, as well as longstanding AI concerns re
+lated to bias, fairness, and ethical implications.
+The 1992 Charter of the German GI-IR group defines
+IR as addressing vague queries and uncertain knowledge
+within information systems, a definition that remains rele
+vant today. However, there is a growing need to shift focus
+away from systems and toward user-centric perspectives.
+At the same time, incorporating vagueness and uncertainty
+into LLM-based IR approaches remains an open research
+challenge.
+Acknowledgements This contribution has been developed in the
+project PLan_CV. Within the funding Programme FH-Personal, the
+project PLan_CV (reference number 03FHP109) is funded by the Ger
+man Federal Ministry of Research, Technology and Space (BMFTR)
+and Joint Science Conference (GWK).
+Funding Open Access funding enabled and organized by Projekt
+DEAL.
+Conflict of interest T. Breuer, S. Frihat, N. Fuhr, D. Lewandowski,
+P. Schaer and R. Schenkel declare that they have no competing inter
+ests.
+Open Access Dieser Artikel wird unter der Creative Commons Na
+mensnennung 4.0 International Lizenz veröffentlicht, welche die
+Nutzung, Vervielfältigung, Bearbeitung, Verbreitung und Wieder
+gabe in jeglichem Medium und Format erlaubt, sofern Sie den/die
+ursprünglichen Autor(en) und die Quelle ordnungsgemäß nennen,
+einen Link zur Creative Commons Lizenz beifügen und angeben, ob
+Änderungen vorgenommen wurden. Die in diesem Artikel enthaltenen
+Bilder und sonstiges Drittmaterial unterliegen ebenfalls der genannten
+Creative Commons Lizenz, sofern sich aus der Abbildungslegende
+nichts anderes ergibt. Sofern das betreffende Material nicht unter der
+genannten Creative Commons Lizenz steht und die betreffende Hand
+lung nicht nach gesetzlichen Vorschriften erlaubt ist, ist für die oben
+aufgeführten Weiterverwendungen des Materials die Einwilligung des
+jeweiligen Rechteinhabers einzuholen. Weitere Details zur Lizenz ent
+nehmen Sie bitte der Lizenzinformation auf http://creativecommons.
+org/licenses/by/4.0/deed.de.
+References
+1. Alaofi M, Gallagher L, Sanderson M et al (2023) Can generative
+LLms create query variants for test collections? An exploratory
+study. In: SIGIR. ACM, pp 1869–1873 https://doi.org/10.1145/
+3539618.3591960
+2. Allan J, Choi E, Lopresti DP et al (2024) Future of information
+retrieval research in the age of generative AI. arXiv abs/2412.02043
+https://doi.org/10.48550/ARXIV.2412.02043
+3. Azzopardi L, Clarke CLA, Kantor PB et al (2024) The search fu
+tures workshop. In: ECIR (5), lecture notes in computer science.
+Springer, pp 422–425 https://doi.org/10.1007/978-3-031-56069-9_
+57
+4. Baeza-Yates R, Murgai L, Dudy S (2024) Bias in retrieval systems.
+In: information retrieval: advanced topics and techniques, 1st edn.
+Association for Computing Machinery, New York, NY, USA, pp
+389–444 https://doi.org/10.1145/3674127.3674138
+5. Balog K, Metzler D, Qin Z (2025) Rankers, judges, and assistants:
+towards understanding the interplay of LLms in information re
+trieval evaluation. arxiv abs/2503.19092 https://doi.org/10.48550/
+ARXIV.2503.19092
+6. Bao Z, Chen W,Xiao Set al (2023) DISC-MedLLM: bridging gen
+eral large language models and real-world medical consultation.
+arxiv abs/2308.14346 https://doi.org/10.48550/ARXIV.2308.14346
+7. Bauer C, Chen L, Ferro N et al (2025) Conversational agents:
+a framework for evaluation (CAFE) (Dagstuhl perspectives work
+shop 24352). Dagstuhl Rep 14(8):53–58. https://doi.org/10.4230/
+DagRep.14.8.53
+8. Bawden D, Robinson L (2009) The dark side of information:
+overload, anxiety and other paradoxes and pathologies. J Inf Sci
+35(2):180–191. https://doi.org/10.1177/0165551508095781
+9. Berman E, Sundberg MH, Bitzer M et al (2025) Retrieval aug
+mented therapy suggestion for molecular tumor boards: algorithmic
+development and validation study. J Med Internet Res 27:e64364.
+https://doi.org/10.2196/64364
+10. Borgeaud S, Mensch A, Hoffmann J et al (2022) Improving lan
+guage models by retrieving from trillions of tokens. In: ICML, pro
+ceedings of machine learning research. PMLR, pp 2206–2240
+11. Cai Y, Wang L, Wang Y et al (2024) Medbench: a large-scale
+chinese benchmark for evaluating medical large language models.
+In: AAAI. AAAI Press, pp 17709–17717 https://doi.org/10.1609/
+AAAI.V38I16.29723
+12. Cao Y, Li S, Liu Y et al (2025) A survey of AI-generated content
+(AIGC). ACM Comput Surv 57(5):1–125. https://doi.org/10.1145/
+3704262
+13. Chen X,He B,LinHetal(2024) Spiral of silence: how is large lan
+guage model killing information retrieval?—A case study on open
+domain question answering. In: ACL (1). Association for compu
+tational linguistics, pp 14930–14951 https://doi.org/10.18653/V1/
+2024.ACL-LONG.798
+K
+80
+Datenbank-Spektrum (2025) 25:71–81
+14. Croft WB, Lafferty J (eds) (2003) Language modeling for informa
+tion retrieval. Springer, Netherlands https://doi.org/10.1007/978
+94-017-0171-6
+15. Cuconasu F, Trappolini G, Siciliano F et al (2024) The power of
+noise: redefining retrieval for RAG systems. In: SIGIR. ACM, pp
+719–729 https://doi.org/10.1145/3626772.3657834
+16. Dai S, Xu C, Xu S et al (2024a) Bias and unfairness in information
+retrieval systems: new challenges in the LLM era. In: KDD. ACM,
+pp 6437–6447 https://doi.org/10.1145/3637528.3671458
+17. Dai S, Zhou Y, Pang L et al (2024b) Neural retrievers are biased
+towards llm-generated content. In: KDD. ACM,pp 526–537 https://
+doi.org/10.1145/3637528.3671882
+18. Devlin J, Chang M, Lee K et al (2019) BERT: pre-training of deep
+bidirectional transformers for language understanding. In: NAACL
+HLT (1). Association for computational linguistics, pp 4171–4186
+https://doi.org/10.18653/V1/N19-1423
+19. Dietz L (2024) A workbench for autograding retrieve/generate
+systems. In: SIGIR. ACM, pp 1963–1972 https://doi.org/10.1145/
+3626772.3657871
+20. Ding Y, Facciani M, Joyce E et al (2025) Citations and trust in llm
+generated responses. In: Proceedings of the AAAI conference on
+artificial intelligence, pp 23787–23795
+21. Eisinger F, Holderried F, Mahling M et al (2025) What’s going on
+with me and how can I better manage my health? The potential of
+GPT-4 to transform discharge letters into patient-centered letters to
+enhance patient safety: prospective, exploratory study. J Med Inter
+net Res 27:e67143. https://doi.org/10.2196/67143
+22. Engelmann B, Kreutz C, Haak F et al (2024) ARTS: assessing read
+ability & text simplicity. In: EMNLP (findings), pp 14925–14942
+https://doi.org/10.18653/v1/2024.findings-emnlp.877
+23. Faggioli G, Dietz L, Clarke CLA et al (2024) Who determines
+what is relevant? Humans or AI? Why not both? Commun ACM
+67(4):31–34. https://doi.org/10.1145/3624730
+24. Frihat S, Fuhr N (2025) Supporting evidence-based medicine
+by finding both relevant and significant works. Inf Retr Res
+1(1):93–108. https://doi.org/10.54195/irrj.19784
+25. Geng B, Huan Z, Zhang X et al (2024) Breaking the length bar
+rier: LLM-enhanced CTR prediction in long textual user behaviors.
+In: SIGIR. ACM, pp 2311–2315 https://doi.org/10.1145/3626772.
+3657974
+26. Gienapp L, Scells H, Deckers N et al (2024) Evaluating genera
+tive ad hoc information retrieval. In: SIGIR. ACM, pp 1916–1929
+https://doi.org/10.1145/3626772.3657849
+27. Guo G, Naous T, Wakaki H et al (2025) Care: aligning lan
+guage models for regional cultural awareness. arxiv preprint
+arxiv:250405154
+28. Haak F, Engelmann B, Kreutz CK et al (2024) Investigating bias
+in political search query suggestions by relative comparison with
+LLms. In: Websci (companion). ACM, pp 5–7 https://doi.org/10.
+1145/3630744.3658415
+29. Häußler H (2025) Doktor Google und mister Finanzchef Google
+sind nicht immer die besten Freunde” Eine kontrollierte Laborstudie
+zum Vertrauen in Suchmaschinen. In: 18. Internationales sympo
+sium Für Informationswissenschaft (ISI 2025). Hülsbusch, Glück
+stadt https://doi.org/10.5281/zenodo.14925640
+30. Holderried F, Stegemann-Philipps C, Herrmann-Werner A et al
+(2024) A language model-powered simulated patient with auto
+mated feedback for history taking: prospective study. Jmir Med
+Educ 10(1):e59213. https://doi.org/10.2196/59213
+31. Ja´zwi´nska K, Chandrasekar A (2025) AI search has a citation
+problem. https://www.cjr.org/tow_center/we-compared-eight-ai
+search-engines-theyre-all-bad-at-citing-news.php. Accessed 18
+03-2025
+32. Ji Z, Lee N, Frieske R et al (2023) Survey of hallucination in natural
+language generation. ACM Comput Surv 55(12):1–248
+33. Karlgren J, Dürlich L, Gogoulou E et al (2024) Eloquent clef shared
+tasks for evaluation of generative language model quality. In: ECIR,
+pp 459–465 https://doi.org/10.1007/978-3-031-56069-9_63
+34. Khramtsova E, Zhuang S, Baktashmotlagh M et al (2024) Lever
+aging LLms for unsupervised dense retriever ranking. In: SIGIR.
+ACM, pp 1307–1317 https://doi.org/10.1145/3626772.3657798
+35. Kreutz C, Haak F, Engelmann B et al (2024) BATS: benchmarking
+text simplicity. In: ACL (findings), pp 11968–11989 https://doi.org/
+10.18653/V1/2024.FINDINGS-ACL.712
+36. Kulkarni M, Tangarajan P, Kim K et al (2024) Reinforcement
+learning for optimizing rag for domain chatbots. arxiv preprint
+arxiv:240106800
+37. Lewis PSH, Perez E, Piktus A et al (2020) Retrieval-augmented
+generation for knowledge-intensive NLP tasks. In: NeurIPS (https://
+proceedings.neurips.cc/paper/2020/hash/6b493230205f780e1bc26
+945df7481e5-Abstract.html)
+38. Li S, Stenzel L, Eickhoff C et al (2025) Enhancing retrieval-aug
+mented generation: a study of best practices. In: COLING. Associ
+ation for Computational Linguistics, pp 6705–6717
+39. Li Y, Wang S, Huang L et al (2024) Graph-based confidence cali
+bration for large language models. arxiv preprint arxiv:241102454
+40. Lin G, Feng T, Han P et al (2024) Paper copilot: a self-evolving
+and efficient llm system for personalized academic assistance. arxiv
+preprint arxiv:240904593
+41. Lin J, Nogueira R, Yates A (2021) Pretrained transformers for text
+ranking: BERT and beyond. Synthesis lectures on human language
+technologies. Morgan & Claypool Publishers https://doi.org/10.
+2200/S01123ED1V01Y202108HLT053
+42. Liu B, Wu Y, Liu Y et al (2021) Conversational vs traditional:
+comparing search behavior and outcome in legal case retrieval.
+In: SIGIR. ACM, pp 1622–1626 https://doi.org/10.1145/3404835.
+3463064
+43. Liu J, Qiu Z, Li Z et al (2025a) A survey of personalized large
+language models: progress and future directions. arxiv preprint
+arxiv:250211528
+44. Liu NF, Lin K, Hewitt J et al (2024) Lost in the middle: how lan
+guage models use long contexts. Trans Assoc Comput Linguistics
+12:157–173. https://doi.org/10.1162/TACL_A_00638
+45. Liu Z, Simon C, Caspani F (2025b) Passage segmentation of doc
+uments for extractive question answering. arxiv abs/2501.09940
+https://doi.org/10.48550/ARXIV.2501.09940
+46. Lu K, Liang Z, Pan D et al (2025) Med-R2: crafting trustworthy
+LLM physicians through retrieval and reasoning of evidence-based
+medicine. arxiv abs/2501.11885 https://doi.org/10.48550/ARXIV.
+2501.11885
+47. Mansour W, Zhuang S, Zuccon G et al (2024) Revisiting document
+expansion and filtering for effective first-stage retrieval. In: SIGIR.
+ACM, pp 186–196 https://doi.org/10.1145/3626772.3657850
+48. Marchionini G (2006) Exploratory search: from finding to un
+derstanding. Commun ACM 49(4):41–46. https://doi.org/10.1145/
+1121949.1121979
+49. Mayfield J, Yang E, Lawrie DJ et al (2024) On the evaluation of
+machine-generated reports. In: SIGIR. ACM, pp 1904–1915 https://
+doi.org/10.1145/3626772.3657846
+50. Metzler D, Tay Y, Bahri D et al (2021) Rethinking search: making
+domain experts out of dilettantes. SIGIR Forum 55(1):1–13. https://
+doi.org/10.1145/3476415.3476428
+51. Najork M (2023) Generative information retrieval. In: Chen H, Duh
+WE,HuangHetal(eds) Proceedings ofthe46thinternational ACM
+SIGIR conference on research and development in information re
+trieval, SIGIR 2023. ACM, Taipei, Taiwan, pp 23–27 https://doi.
+org/10.1145/3539618.3591871
+52. Quinn D, Nouri M, Patel N et al (2025) Accelerating retrieval-aug
+mented generation. In: ASPLOS (1). ACM, pp 15–32 https://doi.
+org/10.1145/3669940.3707264
+K
+Datenbank-Spektrum (2025) 25:71–81
+81
+53. Rafailov R, Sharma A, Mitchell E et al (2023) Direct preference
+optimization: your language model is secretly a reward model.
+In: NeurIPS (http://papers.nips.cc/paper_files/paper/2023/hash/
+a85b405ed65c6477a4fe8302b5e06ce7-Abstract-Conference.html)
+54. Rahmani HA, Siro C, Aliannejadi M et al (2024) LLM4Eval:
+large language model for evaluation in IR. In: SIGIR. ACM, pp
+3040–3043 https://doi.org/10.1145/3626772.3657992
+55. Rahmani HA, Siro C, Aliannejadi M et al (2025) LLM4Eval@WS
+DM2025: large language model for evaluation in information re
+trieval. In: WSDM. ACM, pp 1120–1121 https://doi.org/10.1145/
+3701551.3705706
+56. Sakai T (2023) On a few responsibilities of (IR) researchers (fair
+ness, awareness, and sustainability): a keynote at ECIR 2023. SI
+GIR Forum 57(1):1–4. https://doi.org/10.1145/3636341.3636347
+57. Shuster K, Poff S, Chen M et al (2021) Retrieval augmentation re
+duces hallucination in conversation. In: EMNLP (findings). Asso
+ciation for Computational Linguistics, pp 3784–3803
+58. Soboroff I (2024a) Don’t use LLms to make relevance judgments.
+arxiv abs/2409.15133 https://doi.org/10.48550/ARXIV.2409.15133
+59. Soboroff I (2024b) Privacy in information retrieval. In: Alonso O,
+Baeza-Yates R (eds) Information retrieval: advanced topics and
+techniques, ACM books. ACM, pp 445–463 https://doi.org/10.
+1145/3674127.3674139
+60. Spinde T, Hinterreiter S, Haak F et al (2023) The media bias tax
+onomy: a systematic literature review on the forms and automated
+detection of media bias. arxiv abs/2312.16148 https://doi.org/10.
+48550/ARXIV.2312.16148
+61. Sun W,Yan L, MaXetal (2023) Is chatGPT good at search? Inves
+tigating large language models as re-ranking agents. In: EMNLP.
+Association for Computational Linguistics, pp 14918–14937
+https://doi.org/10.18653/V1/2023.EMNLP-MAIN.923
+62. Takehi R, Voorhees EM, Sakai T et al (2024) LLM-assisted rel
+evance assessments: when should we ask LLms for help? arxiv
+abs/2411.06877 https://doi.org/10.48550/ARXIV.2411.06877
+63. Taylor RS (1968) Question-negotiation and information seeking in
+libraries. Coll Res Libr 76:251–267
+64. Thirunavukarasu AJ, Ting DSJ, Elangovan K et al (2023) Large
+language models in medicine. Nat Med 29(8):1930–1940. https://
+doi.org/10.1038/s41591-023-02448-8
+65. Thomas P, Spielman S, Craswell N et al (2024) Large language
+models can accurately predict searcher preferences. In: SIGIR.
+ACM, pp 1930–1940 https://doi.org/10.1145/3626772.3657707
+66. Trippas JR (2024a) Conversational search. In: Information retrieval:
+advanced topics and techniques, ACM books. ACM, pp 285–319
+67. Trippas JR (2024b) Conversational search. In: Information re
+trieval: advanced topics and techniques, ACM books. ACM, pp
+285–319 https://doi.org/10.1145/3674127.3674135
+68. Trippas JR, Spina D, Scholer F (2025) Adapting generative infor
+mation retrieval systems to users, tasks, and scenarios. In: Informa
+tion access in the era of generative AI. Springer Nature Switzerland,
+Cham, pp 73–109 https://doi.org/10.1007/978-3-031-73147-1_4
+69. Upadhyay S, Pradeep R, Thakur N et al (2024) UMBRELA:
+umbrela is the (open-source reproduction of the) bing relevance
+assessor. arxiv abs/2406.06519 https://doi.org/10.48550/ARXIV.
+2406.06519
+70. Vaswani A, Shazeer N, Parmar N et al (2017) Attention is all
+you need. In: NIPS, pp 5998–6008. https://proceedings.neurips.cc/
+paper/2017/hash/3f5ee243547dee91fbd053c1c4a845aa-Abstract.
+html. Accessed: 24.07.2025
+71. Wang J, Yang Z, YaoZ et al (2024a) JMLR: joint medical LLM and
+retrieval training for enhancing reasoning and professional ques
+tion answering capability. arxiv abs/2402.17887 https://doi.org/10.
+48550/ARXIV.2402.17887
+72. Wang L, Yang N, Huang X et al (2024b) Large search model: re
+defining search stack in the era of llms. In: ACM SIGIR forum.
+ACM,NewYork, NY, USA, pp 1–16
+73. Wang S, Zhuang S, Zuccon G (2024c) Large language models
+based stemming for information retrieval: promises, pitfalls and
+failures. In: SIGIR. ACM, pp 2492–2496 https://doi.org/10.1145/
+3626772.3657949
+74. White RW (2016) Interactions with search systems. Cambridge
+University Press https://doi.org/10.1017/CBO9781139525305
+75. White RW (2024) Advancing the search frontier with AI agents.
+Commun ACM67(9):54–65. https://doi.org/10.1145/3655615
+76. Wiratunga N, Abeyratne R, Jayawardena L et al (2024) Cbr-rag:
+case-based reasoning for retrieval augmented generation in llms
+for legal question answering. In: International conference on case
+based reasoning. Springer, pp 445–460
+77. Xu S, Pang L, Shen H et al (2023) Search-in-the-chain: towards
+the accurate, credible and traceable content generation for com
+plex knowledge-intensive tasks. arxiv abs/2304.14732 https://doi.
+org/10.48550/ARXIV.2304.14732
+78. Zeng H, Luo C, Zamani H (2024) Planning ahead in generative
+retrieval: guiding autoregressive generation through simultaneous
+decoding. In: SIGIR. ACM, pp 469–480 https://doi.org/10.1145/
+3626772.3657746
+79. Zhai C (2024) Large language models and future of information re
+trieval: opportunities and challenges. In: SIGIR. ACM, pp 481–490
+https://doi.org/10.1145/3626772.3657848
+80. Zhang E, Wang X, Gong P et al (2024a) Usimagent: large lan
+guage models for simulating search users. In: SIGIR. ACM, pp
+2687–2692 https://doi.org/10.1145/3626772.3657963
+81. Zhang P, Liu Z, Zhou Y et al (2024b) Generative retrieval via term
+set generation. In: SIGIR. ACM, pp 458–468 https://doi.org/10.
+1145/3626772.3657797
+82. Zheng L, Chiang W,Sheng Y et al (2023) Judging LLM-as-a-judge
+with MT-bench and Chatbot arena. In: NeurIPS (http://papers.nips.
+cc/paper_files/paper/2023/hash/91f18a1287b398d378ef22505bf41
+832-Abstract-Datasets_and_Benchmarks.html)
+83. Zhou H, Gu B, Zou X et al (2023) A survey of large language
+models in medicine: progress, application, and challenge. arxiv
+abs/2311.05112 https://doi.org/10.48550/ARXIV.2311.05112
+84. Zhu Y, Yuan H, Wang S et al (2023) Large language models for
+information retrieval: A survey. arXiv abs/2308.07107 https://doi.
+org/10.48550/ARXIV.2308.07107
+Publisher’s Note Springer Nature remains neutral with regard to juris
+dictional claims in published maps and institutional affiliations.
+K
